@@ -5,24 +5,25 @@ Flickr Uploader app
 This is a simple Java-based desktop application that allows users to upload photos to Flickr. 
 It exposes web service endpoint for uploading image to the user's Flickr account.
 
-The web service is secured using basic authentication. Username is provided via env variable FLICKR_USERNAME, password encrypted with SHA-256 and provided via FLICKR_PWD_HASH.
+The web service is secured using basic authentication. Username is provided via application runtime variable `flickr.user.name` and password is SHA-256 hash of the Flickr password provided via `flickr.user.pswd` runtime variable.
 
 ## Prerequisites
 
-There are 7 parameters that must be provided via env variables for the app to work:
+There are 7 parameters that must be provided via application runtime variables for the app to work:
 
-- FLICKR_API_KEY - provided by Flickr for accessing their API
-- FLICKR_API_SECRET - provided by Flickr for accessing their API
-- FLICKR_OAUTH_TOKEN - provided by Flickr after user authorizes the app
-- FLICKR_OAUTH_TOKEN_SECRET - provided by Flickr after user authorizes the app
-- FLICKR_USER_NSID - the Flickr user NSID (numeric identifier)
-- FLICKR_USERNAME - Flickr username
-- FLICKR_PWD_HASH - SHA-256 hash of the Flickr password for basic auth
+- `flickr.api.key` - Flickr API key provided by Flickr for accessing their API
+- `flickr.api.secret` - Flickr API secret provided by Flickr for accessing their API
+- `flickr.oauth.token` - OAuth token provided by Flickr after user authorizes the app
+- `flickr.oauth.token.secret` - OAuth token secret provided by Flickr after user authorizes the app
+- `flickr.user.nsid` - Flickr user NSID (numeric identifier).
+- `flickr.user.name` - Flickr username for basic authentication
+- `flickr.user.pswd` - SHA-256 hash of the Flickr password for basic authentication
+
 
 ## Tech Stack
 
 - Java 25
-- Spring Boot 3.5.x
+- Spring Boot 4.0.0
 - Maven
 - Flickr4Java library for Flickr API integration
 
