@@ -21,6 +21,9 @@ WORKDIR /app
 # Create non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+# Create logs directory with proper permissions
+RUN mkdir -p /app/logs && chown -R appuser:appgroup /app/logs
+
 # Copy the built jar from builder stage
 COPY --from=builder /app/target/flickr-upldr-1.0-SNAPSHOT.jar app.jar
 
