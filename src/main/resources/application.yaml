@@ -1,3 +1,79 @@
+# Application Configuration
 spring:
   application:
     name: flickr-upldr
+
+  # Multipart File Upload Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 210MB
+      file-size-threshold: 2MB
+      location: /tmp
+  web:
+    error:
+      include-binding-errors: on_param
+      include-message: always
+      include-stacktrace: never
+      include-exception: false
+
+# Server Configuration
+server:
+  port: 8080
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized  # Show details only for authenticated users
+      probes:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  simple:
+    metrics:
+      export:
+        enabled: true
+
+# Logging Configuration
+logging:
+  file:
+    name: logs/flickr-upldr.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    pl.czerwiu.flickr.upldr: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+
+# Flickr API Configuration (use environment variables)
+flickr:
+  api:
+    key: ${FLICKR_API_KEY:}
+    secret: ${FLICKR_API_SECRET:}
+  oauth:
+    token: ${FLICKR_OAUTH_TOKEN:}
+    token-secret: ${FLICKR_OAUTH_TOKEN_SECRET:}
+  user:
+    nsid: ${FLICKR_USER_NSID:}
+    name: ${FLICKR_USER_NAME:}
+    pswd: ${FLICKR_USER_PSWD_HASH:}  # SHA-256 hash
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha

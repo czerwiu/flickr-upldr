@@ -1,0 +1,13 @@
+### Upload photo to Flickr
+POST {{baseUrl}}/upload?album=iPhones&title=Nałęczów Prezentacja&description=Nałęczów, Poland - prezentacja Tomka&tags=naleczow,assecobs
+Authorization: Basic {{username}} {{password}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="photo.jpg"
+Content-Type: image/jpeg
+
+< /Users/czerwiu/Pictures/Naleczow 2025/abs-naleczow-25 - 2.jpeg
+--WebAppBoundary--
+
+###

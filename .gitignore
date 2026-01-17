@@ -122,3 +122,4 @@ jacoco.exec
 *.swp
 *.swo
 *~
+/http/http-client.private.env.json
