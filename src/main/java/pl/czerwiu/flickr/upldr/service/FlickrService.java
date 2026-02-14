@@ -6,6 +6,8 @@ import com.flickr4java.flickr.RequestContext;
 import com.flickr4java.flickr.auth.Auth;
 import com.flickr4java.flickr.uploader.UploadMetaData;
 import com.flickr4java.flickr.util.AuthStore;
+import pl.czerwiu.flickr.upldr.exception.DuplicatePhotoException;
+import pl.czerwiu.flickr.upldr.flickr.DedupUploadMetaData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
@@ -73,8 +75,13 @@ public class FlickrService {
         try {
             InputStream inputStream = file.getInputStream();
 
-            // Prepare upload metadata
-            UploadMetaData metadata = new UploadMetaData();
+            // Prepare upload metadata (with optional dedup check)
+            UploadMetaData metadata;
+            if (request.getDedupCheck() != null) {
+                metadata = new DedupUploadMetaData(request.getDedupCheck());
+            } else {
+                metadata = new UploadMetaData();
+            }
             metadata.setTitle(request.getTitle());
             metadata.setDescription(request.getDescription());
 
@@ -93,6 +100,11 @@ public class FlickrService {
             return photoId;
 
         } catch (FlickrException e) {
+            if ("9".equals(e.getErrorCode())) {
+                log.warn("Duplicate photo detected: {}", e.getMessage());
+                throw new DuplicatePhotoException(
+                    "Duplicate photo detected", e.getErrorMessage(), e);
+            }
             log.warn("Flickr API error during upload: {}", e.getMessage());
             throw new RuntimeException(e);  // Will trigger retry
         } catch (IOException e) {

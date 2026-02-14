@@ -70,6 +70,14 @@ public class UploadController {
             )
         ),
         @ApiResponse(
+            responseCode = "409",
+            description = "Conflict - duplicate photo detected (only when dedupCheck is enabled)",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)
+            )
+        ),
+        @ApiResponse(
             responseCode = "401",
             description = "Unauthorized - invalid or missing credentials",
             content = @Content(
@@ -116,7 +124,13 @@ public class UploadController {
                 description = "Comma-separated tags",
                 example = "beach,sunset,california,malibu,2024"
             )
-            @RequestParam(value = "tags", required = false) String tags
+            @RequestParam(value = "tags", required = false) String tags,
+
+            @Parameter(
+                description = "Duplicate check mode: 1 = check all photos, 2 = check recent uploads only",
+                example = "1"
+            )
+            @RequestParam(value = "dedupCheck", required = false) Integer dedupCheck
     ) {
         log.debug("Upload endpoint called: filename={}, album={}",
             file.getOriginalFilename(), album);
@@ -136,6 +150,7 @@ public class UploadController {
             .title(title != null ? title.trim() : null)
             .description(description != null ? description.trim() : null)
             .tags(tags != null ? tags.trim() : null)
+            .dedupCheck(dedupCheck)
             .build();
 
         // Delegate to service

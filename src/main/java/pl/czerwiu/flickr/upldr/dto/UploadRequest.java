@@ -36,4 +36,10 @@ public class UploadRequest {
      * Example: "beach,sunset,california"
      */
     private String tags;
+
+    /**
+     * Duplicate photo check mode (optional).
+     * 1 = check all user's photos, 2 = check recent uploads only, null = no check.
+     */
+    private Integer dedupCheck;
 }

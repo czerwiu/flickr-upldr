@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import pl.czerwiu.flickr.upldr.dto.ErrorResponse;
+import pl.czerwiu.flickr.upldr.exception.DuplicatePhotoException;
 import pl.czerwiu.flickr.upldr.exception.FlickrUploadException;
 import pl.czerwiu.flickr.upldr.exception.RetryExhaustedException;
 
@@ -21,6 +22,29 @@ import java.time.LocalDateTime;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * Handles DuplicatePhotoException (duplicate photo detected by Flickr).
+     */
+    @ExceptionHandler(DuplicatePhotoException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicatePhotoException(
+            DuplicatePhotoException ex, WebRequest request) {
+
+        log.warn("Duplicate photo detected: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.CONFLICT.value())
+            .error(HttpStatus.CONFLICT.getReasonPhrase())
+            .message(ex.getMessage())
+            .details(ex.getDetails())
+            .path(extractPath(request))
+            .build();
+
+        return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(error);
+    }
 
     /**
      * Handles FlickrUploadException (photo upload failures).
