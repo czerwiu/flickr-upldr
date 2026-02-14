@@ -129,11 +129,11 @@ public class FlickrService {
             MultipartFile file,
             UploadRequest request) {
 
-        log.error("Upload failed after 3 retry attempts: filename={}, error={}",
-            file.getOriginalFilename(), e.getMessage(), e);
+        log.error("Upload failed after 3 retry attempts: filename={}, title={}, error={}",
+            file.getOriginalFilename(), request.getTitle(), e.getMessage(), e);
 
         throw new RetryExhaustedException(
-            "Failed to upload photo after 3 retries: " + e.getMessage(), e);
+            "Failed to upload photo " + request.getTitle() + " after 3 retries: " + e.getMessage(), e);
     }
 
     /**
